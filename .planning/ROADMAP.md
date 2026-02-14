@@ -12,7 +12,7 @@ This roadmap delivers a personal finance tracker in five phases, starting with f
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation & Core Tracking** - Fast expense entry with monthly summaries and CSV export
+- [x] **Phase 1: Foundation & Core Tracking** - Fast expense entry with monthly summaries and CSV export
 - [ ] **Phase 2: Dashboard & Visualization** - Visual insights with charts and transaction management
 - [ ] **Phase 3: Authentication & Multi-Device Sync** - Cross-device access with user accounts
 - [ ] **Phase 4: Investment Portfolio Tracking** - Track investments alongside expenses
@@ -33,10 +33,10 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 4 plans
 
 Plans:
-- [ ] 01-01-PLAN.md -- Project scaffolding, types, and core libraries
-- [ ] 01-02-PLAN.md -- Expense form and today's spending view
-- [ ] 01-03-PLAN.md -- Income form, transaction history, monthly summary, CSV export
-- [ ] 01-04-PLAN.md -- Integration verification checkpoint
+- [x] 01-01-PLAN.md — Project scaffolding, types, and core libraries
+- [x] 01-02-PLAN.md — Expense form and today's spending view
+- [x] 01-03-PLAN.md — Income form, transaction history, monthly summary, CSV export
+- [x] 01-04-PLAN.md — Integration verification checkpoint
 
 ### Phase 2: Dashboard & Visualization
 **Goal**: Add visual insights and transaction management capabilities
@@ -48,10 +48,13 @@ Plans:
   3. User can edit existing transactions to correct mistakes
   4. User can delete incorrect transactions
   5. Dashboard loads in under 2 seconds even with 500+ transactions
-**Plans**: TBD
+**Plans**: 4 plans
 
 Plans:
-- [ ] TBD during phase planning
+- [ ] 02-01-PLAN.md — Category breakdown chart with Recharts and data aggregation
+- [ ] 02-02-PLAN.md — Trend comparison chart with time range selector
+- [ ] 02-03-PLAN.md — Edit and delete transactions on Today page
+- [ ] 02-04-PLAN.md — Phase verification checkpoint
 
 ### Phase 3: Authentication & Multi-Device Sync
 **Goal**: Enable cross-device access with secure user authentication
@@ -104,8 +107,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Core Tracking | 0/4 | Planned | - |
-| 2. Dashboard & Visualization | 0/? | Not started | - |
+| 1. Foundation & Core Tracking | 4/4 | Complete | 2026-02-14 |
+| 2. Dashboard & Visualization | 0/4 | Planned | - |
 | 3. Authentication & Multi-Device Sync | 0/? | Not started | - |
 | 4. Investment Portfolio Tracking | 0/? | Not started | - |
 | 5. Enhanced Tracking Features | 0/? | Not started | - |
