@@ -20,16 +20,16 @@
 **Goal:** Enable daily expense and income tracking with minimal friction
 
 **In scope:**
-- [ ] Quick expense entry form (amount, category, optional notes)
-- [ ] Income logging (single source)
-- [ ] Today's spending summary view
-- [ ] Monthly summary (total spent + breakdown by category)
-- [ ] Transaction history list (view all entries)
-- [ ] CSV export (all data)
-- [ ] Fixed expense categories: Makan, Transportasi, Rokok, Belanja, Lainnya
-- [ ] Proper date handling (timezone-aware, DST-safe)
-- [ ] Decimal-based monetary amounts (no floating-point errors)
-- [ ] Append-only transaction ledger (data integrity)
+- [ ] CORE-01: Quick expense entry form (amount, category, optional notes)
+- [ ] CORE-02: Income logging (single source)
+- [ ] CORE-03: Today's spending summary view
+- [ ] CORE-04: Monthly summary (total spent + breakdown by category)
+- [ ] CORE-05: Transaction history list (view all entries)
+- [ ] CORE-06: CSV export (all data)
+- [ ] CORE-07: Fixed expense categories: Makan, Transportasi, Rokok, Belanja, Lainnya
+- [ ] CORE-08: Proper date handling (timezone-aware, DST-safe)
+- [ ] CORE-09: Decimal-based monetary amounts (no floating-point errors)
+- [ ] CORE-10: Append-only transaction ledger (data integrity)
 
 **Out of scope:**
 - Authentication/multi-device sync (Phase 3)
@@ -43,12 +43,12 @@
 **Goal:** Add visual insights and transaction management
 
 **In scope:**
-- [ ] Pre-aggregated dashboard with charts
-- [ ] Visual spending breakdown by category
-- [ ] Month-to-month comparison
-- [ ] Edit transaction capability
-- [ ] Delete transaction capability
-- [ ] Performance optimization for 500+ transactions
+- [ ] VIZ-01: Pre-aggregated dashboard with charts
+- [ ] VIZ-02: Visual spending breakdown by category
+- [ ] VIZ-03: Month-to-month comparison
+- [ ] VIZ-04: Edit transaction capability
+- [ ] VIZ-05: Delete transaction capability
+- [ ] VIZ-06: Performance optimization for 500+ transactions
 
 **Out of scope:**
 - Yearly view (Phase 5)
@@ -60,10 +60,10 @@
 **Goal:** Enable cross-device access with user authentication
 
 **In scope:**
-- [ ] User authentication (Supabase Auth)
-- [ ] Multi-device data sync
-- [ ] Secure data access per user
-- [ ] Migration from single-user to multi-user schema
+- [ ] AUTH-01: User authentication (Supabase Auth)
+- [ ] AUTH-02: Multi-device data sync
+- [ ] AUTH-03: Secure data access per user
+- [ ] AUTH-04: Migration from single-user to multi-user schema
 
 **Out of scope:**
 - Multi-user sharing (future v2.0)
@@ -75,12 +75,12 @@
 **Goal:** Track investment portfolio alongside expenses
 
 **In scope:**
-- [ ] Add investment entry (name, category, amount, current value)
-- [ ] Investment categories: Saham (stocks), Emas (gold), Reksadana (mutual funds)
-- [ ] View investment portfolio with current values
-- [ ] Edit/update investment values
-- [ ] Investment summary in monthly view
-- [ ] Include investments in CSV export
+- [ ] INV-01: Add investment entry (name, category, amount, current value)
+- [ ] INV-02: Investment categories: Saham (stocks), Emas (gold), Reksadana (mutual funds)
+- [ ] INV-03: View investment portfolio with current values
+- [ ] INV-04: Edit/update investment values
+- [ ] INV-05: Investment summary in monthly view
+- [ ] INV-06: Include investments in CSV export
 
 **Out of scope:**
 - Real-time stock price APIs (manual entry only)
@@ -92,13 +92,13 @@
 **Goal:** Quality-of-life improvements and advanced insights
 
 **In scope:**
-- [ ] Yearly summary (annual totals and averages)
-- [ ] Category trend visualization over time
-- [ ] Recurring expense templates (save common expenses for quick re-entry)
-- [ ] Budget limits per category
-- [ ] Budget alerts when approaching limits
-- [ ] Dark mode
-- [ ] Quick-entry keyboard shortcuts
+- [ ] ENH-01: Yearly summary (annual totals and averages)
+- [ ] ENH-02: Category trend visualization over time
+- [ ] ENH-03: Recurring expense templates (save common expenses for quick re-entry)
+- [ ] ENH-04: Budget limits per category
+- [ ] ENH-05: Budget alerts when approaching limits
+- [ ] ENH-06: Dark mode
+- [ ] ENH-07: Quick-entry keyboard shortcuts
 
 **Out of scope:**
 - Receipt scanning
@@ -106,6 +106,46 @@
 - AI categorization
 - Multi-currency support
 - Offline mode
+
+## Traceability
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| CORE-01 | Phase 1 | Pending |
+| CORE-02 | Phase 1 | Pending |
+| CORE-03 | Phase 1 | Pending |
+| CORE-04 | Phase 1 | Pending |
+| CORE-05 | Phase 1 | Pending |
+| CORE-06 | Phase 1 | Pending |
+| CORE-07 | Phase 1 | Pending |
+| CORE-08 | Phase 1 | Pending |
+| CORE-09 | Phase 1 | Pending |
+| CORE-10 | Phase 1 | Pending |
+| VIZ-01 | Phase 2 | Pending |
+| VIZ-02 | Phase 2 | Pending |
+| VIZ-03 | Phase 2 | Pending |
+| VIZ-04 | Phase 2 | Pending |
+| VIZ-05 | Phase 2 | Pending |
+| VIZ-06 | Phase 2 | Pending |
+| AUTH-01 | Phase 3 | Pending |
+| AUTH-02 | Phase 3 | Pending |
+| AUTH-03 | Phase 3 | Pending |
+| AUTH-04 | Phase 3 | Pending |
+| INV-01 | Phase 4 | Pending |
+| INV-02 | Phase 4 | Pending |
+| INV-03 | Phase 4 | Pending |
+| INV-04 | Phase 4 | Pending |
+| INV-05 | Phase 4 | Pending |
+| INV-06 | Phase 4 | Pending |
+| ENH-01 | Phase 5 | Pending |
+| ENH-02 | Phase 5 | Pending |
+| ENH-03 | Phase 5 | Pending |
+| ENH-04 | Phase 5 | Pending |
+| ENH-05 | Phase 5 | Pending |
+| ENH-06 | Phase 5 | Pending |
+| ENH-07 | Phase 5 | Pending |
+
+**Coverage:** 33/33 requirements mapped (100%)
 
 ## Constraints
 
@@ -206,3 +246,4 @@
 
 ---
 *Created: 2026-02-14 after research phase*
+*Updated: 2026-02-14 with traceability mapping*
