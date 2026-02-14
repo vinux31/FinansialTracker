@@ -30,10 +30,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. User can view monthly summary showing total spent and breakdown by category (Makan, Transportasi, Rokok, Belanja, Lainnya)
   4. User can view complete transaction history with all entries
   5. User can export all data as CSV for backup or analysis
-**Plans**: TBD
+**Plans**: 4 plans
 
 Plans:
-- [ ] TBD during phase planning
+- [ ] 01-01-PLAN.md -- Project scaffolding, types, and core libraries
+- [ ] 01-02-PLAN.md -- Expense form and today's spending view
+- [ ] 01-03-PLAN.md -- Income form, transaction history, monthly summary, CSV export
+- [ ] 01-04-PLAN.md -- Integration verification checkpoint
 
 ### Phase 2: Dashboard & Visualization
 **Goal**: Add visual insights and transaction management capabilities
@@ -101,7 +104,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Core Tracking | 0/? | Not started | - |
+| 1. Foundation & Core Tracking | 0/4 | Planned | - |
 | 2. Dashboard & Visualization | 0/? | Not started | - |
 | 3. Authentication & Multi-Device Sync | 0/? | Not started | - |
 | 4. Investment Portfolio Tracking | 0/? | Not started | - |
