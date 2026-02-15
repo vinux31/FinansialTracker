@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { Navigation } from '@/components/navigation'
+import MigrationDetector from '@/components/migration-detector'
 
 export default async function DashboardLayout({
   children,
@@ -18,6 +19,7 @@ export default async function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <MigrationDetector userId={data.user.id} />
       <Navigation userEmail={data.user.email} />
       <main className="max-w-4xl mx-auto px-4 py-8">
         {children}
