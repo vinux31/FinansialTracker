@@ -6,6 +6,7 @@ import { formatIDR } from '@/lib/money'
 import { formatDisplayDateTime } from '@/lib/date'
 import { Transaction } from '@/types'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { TransactionActions } from '@/components/transaction-actions'
 
 interface TodaySummaryProps {
   refreshKey: number
@@ -15,6 +16,7 @@ export function TodaySummary({ refreshKey }: TodaySummaryProps) {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [total, setTotal] = useState(0)
   const [todayDate, setTodayDate] = useState('')
+  const [localRefreshKey, setLocalRefreshKey] = useState(0)
 
   useEffect(() => {
     // Load data from localStorage (hydration guard)
@@ -33,7 +35,11 @@ export function TodaySummary({ refreshKey }: TodaySummaryProps) {
       day: 'numeric',
     }).format(now)
     setTodayDate(formatted)
-  }, [refreshKey])
+  }, [refreshKey, localRefreshKey])
+
+  const handleTransactionUpdate = () => {
+    setLocalRefreshKey(prev => prev + 1)
+  }
 
   return (
     <Card className="shadow-sm">
@@ -73,9 +79,15 @@ export function TodaySummary({ refreshKey }: TodaySummaryProps) {
                       <p className="text-sm text-gray-600 mt-1">{tx.notes}</p>
                     )}
                   </div>
-                  <span className="text-sm font-semibold text-gray-900 ml-4">
-                    {formatIDR(tx.amount)}
-                  </span>
+                  <div className="flex items-center gap-2 ml-4">
+                    <span className="text-sm font-semibold text-gray-900">
+                      {formatIDR(tx.amount)}
+                    </span>
+                    <TransactionActions
+                      transaction={tx}
+                      onUpdate={handleTransactionUpdate}
+                    />
+                  </div>
                 </div>
               ))}
             </div>
