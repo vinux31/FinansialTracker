@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { getTodayTransactions, getTodayTotal } from '@/lib/storage'
+import { getTodayTransactions, getTodayTotal } from '@/lib/db'
 import { formatIDR } from '@/lib/money'
 import { formatDisplayDateTime } from '@/lib/date'
 import { Transaction } from '@/types'
@@ -17,28 +17,51 @@ export function TodaySummary({ refreshKey }: TodaySummaryProps) {
   const [total, setTotal] = useState(0)
   const [todayDate, setTodayDate] = useState('')
   const [localRefreshKey, setLocalRefreshKey] = useState(0)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Load data from localStorage (hydration guard)
-    const txs = getTodayTransactions()
-    const todayTotal = getTodayTotal()
+    async function loadData() {
+      setIsLoading(true)
+      try {
+        // Load data from database
+        const [txs, todayTotal] = await Promise.all([
+          getTodayTransactions(),
+          getTodayTotal()
+        ])
 
-    setTransactions(txs)
-    setTotal(todayTotal)
+        setTransactions(txs)
+        setTotal(todayTotal)
 
-    // Format today's date
-    const now = new Date()
-    const formatted = new Intl.DateTimeFormat('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    }).format(now)
-    setTodayDate(formatted)
+        // Format today's date
+        const now = new Date()
+        const formatted = new Intl.DateTimeFormat('en-US', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        }).format(now)
+        setTodayDate(formatted)
+      } catch (err) {
+        console.error('Failed to load today\'s data:', err)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    loadData()
   }, [refreshKey, localRefreshKey])
 
   const handleTransactionUpdate = () => {
     setLocalRefreshKey(prev => prev + 1)
+  }
+
+  if (isLoading) {
+    return (
+      <Card className="shadow-sm">
+        <CardContent className="pt-6">
+          <p className="text-center text-gray-500">Loading...</p>
+        </CardContent>
+      </Card>
+    )
   }
 
   return (

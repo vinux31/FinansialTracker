@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react'
 import { expenseSchema } from '@/lib/validation'
-import { addExpense } from '@/lib/storage'
+import { addExpense } from '@/lib/db'
 import { CATEGORIES } from '@/types'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -17,7 +17,7 @@ export function ExpenseForm({ onExpenseAdded }: ExpenseFormProps) {
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setErrors({})
     setIsSubmitting(true)
@@ -43,19 +43,24 @@ export function ExpenseForm({ onExpenseAdded }: ExpenseFormProps) {
       return
     }
 
-    // Add expense to storage
-    addExpense({
-      amount: result.data.amount,
-      category: result.data.category,
-      notes: result.data.notes,
-    })
+    try {
+      // Add expense to database
+      await addExpense({
+        amount: result.data.amount,
+        category: result.data.category,
+        notes: result.data.notes,
+      })
 
-    // Reset form
-    formRef.current?.reset()
-    setIsSubmitting(false)
+      // Reset form
+      formRef.current?.reset()
 
-    // Notify parent to refresh
-    onExpenseAdded?.()
+      // Notify parent to refresh
+      onExpenseAdded?.()
+    } catch (err) {
+      setErrors({ submit: err instanceof Error ? err.message : 'Failed to save expense' })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -111,6 +116,10 @@ export function ExpenseForm({ onExpenseAdded }: ExpenseFormProps) {
           <p className="text-sm text-red-600">{errors.notes}</p>
         )}
       </div>
+
+      {errors.submit && (
+        <p className="text-sm text-red-600">{errors.submit}</p>
+      )}
 
       <Button type="submit" className="w-full" disabled={isSubmitting}>
         {isSubmitting ? 'Adding...' : 'Add Expense'}

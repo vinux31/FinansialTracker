@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { incomeSchema, type IncomeInput } from '@/lib/validation'
-import { addIncome } from '@/lib/storage'
+import { addIncome } from '@/lib/db'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -17,10 +17,12 @@ export function IncomeForm({ onIncomeAdded }: IncomeFormProps) {
     notes: '',
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setErrors({})
+    setIsSubmitting(true)
 
     const result = incomeSchema.safeParse(formData)
 
@@ -32,20 +34,27 @@ export function IncomeForm({ onIncomeAdded }: IncomeFormProps) {
         }
       })
       setErrors(fieldErrors)
+      setIsSubmitting(false)
       return
     }
 
-    // Add income to storage
-    addIncome({
-      amount: result.data.amount,
-      notes: result.data.notes,
-    })
+    try {
+      // Add income to database
+      await addIncome({
+        amount: result.data.amount,
+        notes: result.data.notes,
+      })
 
-    // Reset form
-    setFormData({ amount: '', notes: '' })
+      // Reset form
+      setFormData({ amount: '', notes: '' })
 
-    // Notify parent
-    onIncomeAdded?.()
+      // Notify parent
+      onIncomeAdded?.()
+    } catch (err) {
+      setErrors({ submit: err instanceof Error ? err.message : 'Failed to save income' })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -82,8 +91,12 @@ export function IncomeForm({ onIncomeAdded }: IncomeFormProps) {
         )}
       </div>
 
-      <Button type="submit" className="w-full bg-green-600 hover:bg-green-700">
-        Add Income
+      {errors.submit && (
+        <p className="text-sm text-red-600">{errors.submit}</p>
+      )}
+
+      <Button type="submit" className="w-full bg-green-600 hover:bg-green-700" disabled={isSubmitting}>
+        {isSubmitting ? 'Adding...' : 'Add Income'}
       </Button>
     </form>
   )

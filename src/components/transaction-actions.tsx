@@ -10,7 +10,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { updateTransaction, deleteTransaction } from '@/lib/storage'
+import { updateTransaction, deleteTransaction } from '@/lib/db'
 import { Transaction, Category, CATEGORIES } from '@/types'
 import { expenseSchema, incomeSchema } from '@/lib/validation'
 import { formatIDR } from '@/lib/money'
@@ -29,6 +29,7 @@ export function TransactionActions({ transaction, onUpdate }: TransactionActions
     notes: transaction.notes,
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isLoading, setIsLoading] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
   // Close menu when clicking outside
@@ -45,12 +46,19 @@ export function TransactionActions({ transaction, onUpdate }: TransactionActions
     }
   }, [isMenuOpen])
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     const confirmed = confirm('Are you sure you want to delete this transaction?')
-    if (confirmed) {
-      deleteTransaction(transaction.id)
+    if (!confirmed) return
+
+    setIsLoading(true)
+    try {
+      await deleteTransaction(transaction.id)
       setIsMenuOpen(false)
       onUpdate()
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to delete transaction')
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -59,62 +67,71 @@ export function TransactionActions({ transaction, onUpdate }: TransactionActions
     setIsEditOpen(true)
   }
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
     setErrors({})
+    setIsLoading(true)
 
-    // Validate based on transaction type
-    if (transaction.type === 'expense') {
-      const result = expenseSchema.safeParse({
-        amount: formData.amount,
-        category: formData.category,
-        notes: formData.notes,
-      })
-
-      if (!result.success) {
-        const fieldErrors: Record<string, string> = {}
-        result.error.issues.forEach((err) => {
-          if (err.path[0]) {
-            fieldErrors[err.path[0].toString()] = err.message
-          }
+    try {
+      // Validate based on transaction type
+      if (transaction.type === 'expense') {
+        const result = expenseSchema.safeParse({
+          amount: formData.amount,
+          category: formData.category,
+          notes: formData.notes,
         })
-        setErrors(fieldErrors)
-        return
+
+        if (!result.success) {
+          const fieldErrors: Record<string, string> = {}
+          result.error.issues.forEach((err) => {
+            if (err.path[0]) {
+              fieldErrors[err.path[0].toString()] = err.message
+            }
+          })
+          setErrors(fieldErrors)
+          setIsLoading(false)
+          return
+        }
+
+        // Update expense
+        await updateTransaction(transaction.id, {
+          amount: result.data.amount,
+          category: result.data.category,
+          notes: result.data.notes,
+        })
+      } else {
+        // Income validation
+        const result = incomeSchema.safeParse({
+          amount: formData.amount,
+          notes: formData.notes,
+        })
+
+        if (!result.success) {
+          const fieldErrors: Record<string, string> = {}
+          result.error.issues.forEach((err) => {
+            if (err.path[0]) {
+              fieldErrors[err.path[0].toString()] = err.message
+            }
+          })
+          setErrors(fieldErrors)
+          setIsLoading(false)
+          return
+        }
+
+        // Update income
+        await updateTransaction(transaction.id, {
+          amount: result.data.amount,
+          notes: result.data.notes,
+        })
       }
 
-      // Update expense
-      updateTransaction(transaction.id, {
-        amount: result.data.amount,
-        category: result.data.category,
-        notes: result.data.notes,
-      })
-    } else {
-      // Income validation
-      const result = incomeSchema.safeParse({
-        amount: formData.amount,
-        notes: formData.notes,
-      })
-
-      if (!result.success) {
-        const fieldErrors: Record<string, string> = {}
-        result.error.issues.forEach((err) => {
-          if (err.path[0]) {
-            fieldErrors[err.path[0].toString()] = err.message
-          }
-        })
-        setErrors(fieldErrors)
-        return
-      }
-
-      // Update income
-      updateTransaction(transaction.id, {
-        amount: result.data.amount,
-        notes: result.data.notes,
-      })
+      setIsEditOpen(false)
+      onUpdate()
+    } catch (err) {
+      setErrors({ submit: err instanceof Error ? err.message : 'Failed to update transaction' })
+    } finally {
+      setIsLoading(false)
     }
-
-    setIsEditOpen(false)
-    onUpdate()
   }
 
   const handleCancel = () => {
@@ -231,13 +248,18 @@ export function TransactionActions({ transaction, onUpdate }: TransactionActions
               )}
             </div>
 
+            {/* Submit error */}
+            {errors.submit && (
+              <p className="text-sm text-red-600">{errors.submit}</p>
+            )}
+
             {/* Action buttons */}
             <div className="flex justify-end gap-2 pt-4">
-              <Button type="button" variant="outline" onClick={handleCancel}>
+              <Button type="button" variant="outline" onClick={handleCancel} disabled={isLoading}>
                 Cancel
               </Button>
-              <Button type="submit">
-                Save
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? 'Saving...' : 'Save'}
               </Button>
             </div>
           </form>
