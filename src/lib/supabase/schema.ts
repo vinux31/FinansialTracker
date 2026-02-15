@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import { CATEGORIES } from '@/types'
 
 // Database transaction schema (from Supabase)
 export const DatabaseTransactionSchema = z.object({
@@ -7,7 +6,7 @@ export const DatabaseTransactionSchema = z.object({
   user_id: z.string().uuid(),
   type: z.enum(['expense', 'income']),
   amount: z.number().int().positive(),
-  category: z.enum([...CATEGORIES, 'Income'] as [string, ...string[]]),
+  category: z.enum(['Makan', 'Transportasi', 'Rokok', 'Belanja', 'Lainnya', 'Income']),
   notes: z.string(),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/), // YYYY-MM-DD
   timestamp: z.string().datetime(), // ISO 8601 with timezone
@@ -21,7 +20,7 @@ export const InsertTransactionSchema = z.object({
   user_id: z.string().uuid(),
   type: z.enum(['expense', 'income']),
   amount: z.number().int().positive(),
-  category: z.enum([...CATEGORIES, 'Income'] as [string, ...string[]]),
+  category: z.enum(['Makan', 'Transportasi', 'Rokok', 'Belanja', 'Lainnya', 'Income']),
   notes: z.string(),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   timestamp: z.string().datetime(),
