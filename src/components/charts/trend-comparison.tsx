@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import {
   ResponsiveContainer,
   LineChart,
@@ -11,23 +11,40 @@ import {
   Tooltip,
   CartesianGrid,
 } from 'recharts'
-import { getTransactions } from '@/lib/storage'
+import { getTransactions } from '@/lib/db'
 import { aggregateByMonth } from '@/lib/chart-data'
 import { formatIDR } from '@/lib/money'
 import { format } from 'date-fns'
 import currency from 'currency.js'
+import { Transaction } from '@/types'
 
 export function TrendComparison() {
   const [timeRange, setTimeRange] = useState<'3' | '6' | '12'>('3')
+  const [transactions, setTransactions] = useState<Transaction[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
-  // Load transactions and aggregate by month
+  // Load transactions from database
+  useEffect(() => {
+    async function loadData() {
+      setIsLoading(true)
+      try {
+        const txs = await getTransactions()
+        setTransactions(txs)
+      } catch (err) {
+        console.error('Failed to load transactions:', err)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    loadData()
+  }, [])
+
+  // Aggregate by month
   const monthData = useMemo(() => {
-    const transactions = getTransactions()
     const data = aggregateByMonth(transactions, parseInt(timeRange))
-
     // Reverse to show oldest to newest (left to right)
     return data.reverse()
-  }, [timeRange])
+  }, [transactions, timeRange])
 
   // Calculate metrics based on aggregated data
   const metrics = useMemo(() => {
@@ -59,6 +76,15 @@ export function TrendComparison() {
 
     return { percentageChange, averageSpending }
   }, [monthData])
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="flex h-[300px] items-center justify-center text-gray-500">
+        <p>Loading chart...</p>
+      </div>
+    )
+  }
 
   // Empty state
   if (monthData.length === 0) {
