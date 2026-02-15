@@ -65,10 +65,13 @@ Plans:
   2. User can access their data from multiple devices (desktop, mobile browser)
   3. User's data remains private and isolated from other users
   4. User's existing data migrates successfully from localStorage to authenticated account
-**Plans**: TBD
+**Plans**: 4 plans
 
 Plans:
-- [ ] TBD during phase planning
+- [ ] 03-01-PLAN.md — Supabase setup with database schema and RLS policies
+- [ ] 03-02-PLAN.md — Authentication flow (signup/login/logout) and protected routes
+- [ ] 03-03-PLAN.md — Data migration from localStorage and real-time sync
+- [ ] 03-04-PLAN.md — Phase verification checkpoint
 
 ### Phase 4: Investment Portfolio Tracking
 **Goal**: Track investment portfolio alongside expenses for complete financial picture
@@ -109,6 +112,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Foundation & Core Tracking | 4/4 | Complete | 2026-02-14 |
 | 2. Dashboard & Visualization | 4/4 | Complete | 2026-02-15 |
-| 3. Authentication & Multi-Device Sync | 0/? | Not started | - |
+| 3. Authentication & Multi-Device Sync | 0/4 | Ready | - |
 | 4. Investment Portfolio Tracking | 0/? | Not started | - |
 | 5. Enhanced Tracking Features | 0/? | Not started | - |
