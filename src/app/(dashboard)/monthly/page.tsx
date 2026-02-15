@@ -7,6 +7,7 @@ import { getUniqueMonths, formatMonth, currentMonthString } from '@/lib/date'
 import { formatIDR } from '@/lib/money'
 import { aggregateByCategory } from '@/lib/chart-data'
 import { CategoryBreakdown } from '@/components/charts/category-breakdown'
+import { TrendComparison } from '@/components/charts/trend-comparison'
 import { Card } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import {
@@ -99,6 +100,12 @@ export default function MonthlyPage() {
           <Card className="p-6">
             <h2 className="mb-4 text-xl font-semibold">Spending by Category</h2>
             <CategoryBreakdown data={categoryData} />
+          </Card>
+
+          {/* Trend Comparison Chart */}
+          <Card className="p-6">
+            <h2 className="mb-4 text-xl font-semibold">Spending Trends</h2>
+            <TrendComparison />
           </Card>
 
           {/* Category Details */}
