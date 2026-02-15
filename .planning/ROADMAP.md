@@ -13,7 +13,7 @@ This roadmap delivers a personal finance tracker in five phases, starting with f
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation & Core Tracking** - Fast expense entry with monthly summaries and CSV export
-- [ ] **Phase 2: Dashboard & Visualization** - Visual insights with charts and transaction management
+- [x] **Phase 2: Dashboard & Visualization** - Visual insights with charts and transaction management
 - [ ] **Phase 3: Authentication & Multi-Device Sync** - Cross-device access with user accounts
 - [ ] **Phase 4: Investment Portfolio Tracking** - Track investments alongside expenses
 - [ ] **Phase 5: Enhanced Tracking Features** - Yearly summaries, trends, budgets, and quality-of-life improvements
@@ -108,7 +108,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Core Tracking | 4/4 | Complete | 2026-02-14 |
-| 2. Dashboard & Visualization | 0/4 | Planned | - |
+| 2. Dashboard & Visualization | 4/4 | Complete | 2026-02-15 |
 | 3. Authentication & Multi-Device Sync | 0/? | Not started | - |
 | 4. Investment Portfolio Tracking | 0/? | Not started | - |
 | 5. Enhanced Tracking Features | 0/? | Not started | - |
