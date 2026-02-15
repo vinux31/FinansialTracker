@@ -66,7 +66,7 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-- [Future Enhancement]: Add customizable date picker for expense entry on Today page - allows logging yesterday's expenses (user request during 02-04 verification)
+- Add date picker to expense form for logging past expenses (.planning/todos/pending/2026-02-15-add-date-picker-to-expense-form-for-logging-past-expense.md)
 
 ### Blockers/Concerns
 
