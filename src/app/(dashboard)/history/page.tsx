@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Transaction } from '@/types'
-import { getTransactions } from '@/lib/storage'
+import { getTransactions } from '@/lib/db'
 import { formatIDR } from '@/lib/money'
 import { formatDisplayDateTime } from '@/lib/date'
 import { exportTransactionsCSV } from '@/lib/export'
@@ -13,13 +13,23 @@ import { Card } from '@/components/ui/card'
 export default function HistoryPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [refreshKey, setRefreshKey] = useState(0)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Hydration guard - load data only on client
-    const data = getTransactions()
-    // Sort by timestamp descending (newest first)
-    const sorted = data.sort((a, b) => b.timestamp.localeCompare(a.timestamp))
-    setTransactions(sorted)
+    async function loadData() {
+      setIsLoading(true)
+      try {
+        const data = await getTransactions()
+        // Sort by timestamp descending (newest first)
+        const sorted = data.sort((a, b) => b.timestamp.localeCompare(a.timestamp))
+        setTransactions(sorted)
+      } catch (err) {
+        console.error('Failed to load transactions:', err)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    loadData()
   }, [refreshKey])
 
   const handleIncomeAdded = () => {
@@ -49,7 +59,11 @@ export default function HistoryPage() {
       {/* Transaction List */}
       <div>
         <h2 className="mb-4 text-xl font-semibold">All Transactions</h2>
-        {transactions.length === 0 ? (
+        {isLoading ? (
+          <Card className="p-8 text-center text-gray-500">
+            <p>Loading transactions...</p>
+          </Card>
+        ) : transactions.length === 0 ? (
           <Card className="p-8 text-center text-gray-500">
             <p>No transactions yet. Start by adding an expense!</p>
           </Card>

@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { Transaction, CATEGORIES } from '@/types'
-import { getTransactions, getMonthSummary } from '@/lib/storage'
+import { Transaction, CATEGORIES, MonthSummary } from '@/types'
+import { getTransactions, getMonthSummary } from '@/lib/db'
 import { getUniqueMonths, formatMonth, currentMonthString } from '@/lib/date'
 import { formatIDR } from '@/lib/money'
 import { aggregateByCategory } from '@/lib/chart-data'
@@ -22,17 +22,49 @@ export default function MonthlyPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [availableMonths, setAvailableMonths] = useState<string[]>([])
   const [selectedMonth, setSelectedMonth] = useState<string>(currentMonthString())
+  const [summary, setSummary] = useState<MonthSummary | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Hydration guard - load data only on client
-    const data = getTransactions()
-    setTransactions(data)
+    async function loadData() {
+      setIsLoading(true)
+      try {
+        const data = await getTransactions()
+        setTransactions(data)
 
-    const months = getUniqueMonths(data.map(tx => tx.date))
-    setAvailableMonths(months.length > 0 ? months : [currentMonthString()])
+        const months = getUniqueMonths(data.map(tx => tx.date))
+        setAvailableMonths(months.length > 0 ? months : [currentMonthString()])
+      } catch (err) {
+        console.error('Failed to load transactions:', err)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    loadData()
   }, [])
 
-  const summary = getMonthSummary(selectedMonth)
+  useEffect(() => {
+    async function loadSummary() {
+      try {
+        const data = await getMonthSummary(selectedMonth)
+        setSummary(data)
+      } catch (err) {
+        console.error('Failed to load summary:', err)
+      }
+    }
+    loadSummary()
+  }, [selectedMonth])
+
+  if (!summary) {
+    return (
+      <div className="container mx-auto max-w-4xl space-y-6 p-4">
+        <h1 className="text-3xl font-bold">Monthly Summary</h1>
+        <Card className="p-8 text-center text-gray-500">
+          <p>Loading...</p>
+        </Card>
+      </div>
+    )
+  }
   const net = summary.totalIncome - summary.totalExpenses
   const hasData = summary.totalExpenses > 0 || summary.totalIncome > 0
 
