@@ -1,10 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Transaction, CATEGORIES } from '@/types'
 import { getTransactions, getMonthSummary } from '@/lib/storage'
 import { getUniqueMonths, formatMonth, currentMonthString } from '@/lib/date'
 import { formatIDR } from '@/lib/money'
+import { aggregateByCategory } from '@/lib/chart-data'
+import { CategoryBreakdown } from '@/components/charts/category-breakdown'
 import { Card } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import {
@@ -32,6 +34,11 @@ export default function MonthlyPage() {
   const summary = getMonthSummary(selectedMonth)
   const net = summary.totalIncome - summary.totalExpenses
   const hasData = summary.totalExpenses > 0 || summary.totalIncome > 0
+
+  // Memoize category data aggregation for chart performance
+  const categoryData = useMemo(() => {
+    return aggregateByCategory(transactions, selectedMonth)
+  }, [transactions, selectedMonth])
 
   return (
     <div className="container mx-auto max-w-4xl space-y-6 p-4">
@@ -88,9 +95,15 @@ export default function MonthlyPage() {
             </Card>
           </div>
 
-          {/* Category Breakdown */}
+          {/* Category Breakdown Chart */}
           <Card className="p-6">
             <h2 className="mb-4 text-xl font-semibold">Spending by Category</h2>
+            <CategoryBreakdown data={categoryData} />
+          </Card>
+
+          {/* Category Details */}
+          <Card className="p-6">
+            <h2 className="mb-4 text-xl font-semibold">Category Details</h2>
             <div className="space-y-3">
               {CATEGORIES.map((category) => {
                 const amount = summary.byCategory[category]
