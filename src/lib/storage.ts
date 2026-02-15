@@ -101,3 +101,33 @@ export function getMonthSummary(month: string): MonthSummary {
     byCategory,
   }
 }
+
+// Update an existing transaction
+export function updateTransaction(id: string, updates: Partial<Transaction>): void {
+  if (!isClient()) return
+
+  const transactions = getTransactions()
+  const index = transactions.findIndex(tx => tx.id === id)
+
+  if (index === -1) return
+
+  // Merge updates with existing transaction, preserving id and createdAt
+  const updatedTx = {
+    ...transactions[index],
+    ...updates,
+    id: transactions[index].id,
+    createdAt: transactions[index].createdAt,
+  }
+
+  transactions[index] = updatedTx
+  saveTransactions(transactions)
+}
+
+// Delete a transaction
+export function deleteTransaction(id: string): void {
+  if (!isClient()) return
+
+  const transactions = getTransactions()
+  const filtered = transactions.filter(tx => tx.id !== id)
+  saveTransactions(filtered)
+}
