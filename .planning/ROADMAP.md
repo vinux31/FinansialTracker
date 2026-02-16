@@ -117,8 +117,9 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Foundation & Core Tracking | 4/4 | Complete | 2026-02-14 |
 | 2. Dashboard & Visualization | 4/4 | Complete | 2026-02-15 |
 | 3. Authentication & Multi-Device Sync | 5/5 | Complete | 2026-02-16 |
-| 4. Investment Portfolio Tracking | 1/4 | In progress | - |
+| 4. Investment Portfolio Tracking | 4/4 | Complete | 2026-02-16 |
 | 5. Enhanced Tracking Features | 0/? | Not started | - |
+| 6. Financial Planning & Goal Tracking | 4/4 | Complete | 2026-02-16 |
 
 ### Phase 6: Financial Planning & Goal Tracking
 
@@ -135,7 +136,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 **Plans:** 4 plans
 
 Plans:
-- [ ] 06-01-PLAN.md — Database foundation with goals and progress tables, RLS policies, Zod schemas
-- [ ] 06-02-PLAN.md — Goal management UI with creation form, list view, edit/delete functionality
-- [ ] 06-03-PLAN.md — Timeline visualization and progress tracking with monthly table view
-- [ ] 06-04-PLAN.md — KPI dashboard integration and CSV export extension
+- [x] 06-01-PLAN.md — Database foundation with goals and progress tables, RLS policies, Zod schemas
+- [x] 06-02-PLAN.md — Goal management UI with creation form, list view, edit/delete functionality
+- [x] 06-03-PLAN.md — Timeline visualization and progress tracking with monthly table view
+- [x] 06-04-PLAN.md — KPI dashboard integration and CSV export extension
