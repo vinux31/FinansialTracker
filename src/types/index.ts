@@ -36,3 +36,30 @@ export interface FormState {
   message: string
   errors?: Record<string, string[]>
 }
+
+export interface Goal {
+  id: string
+  user_id: string
+  name: string
+  category: string
+  target_amount: number
+  deadline: string // YYYY-MM-DD
+  priority: 'High' | 'Medium' | 'Low'
+  status: 'upcoming' | 'in-progress' | 'completed' | 'overdue'
+  status_override: string | null
+  funding_notes: string
+  created_at: string
+  updated_at: string
+}
+
+export interface ProgressEntry {
+  id: string
+  user_id: string
+  goal_id: string
+  month: string // YYYY-MM
+  planned_amount: number
+  actual_amount: number
+  notes: string
+  created_at: string
+  updated_at: string
+}

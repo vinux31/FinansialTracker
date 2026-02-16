@@ -411,3 +411,170 @@ export async function deleteInvestment(id: string): Promise<void> {
     throw new Error('Failed to delete investment')
   }
 }
+
+// ========================================
+// Goal CRUD Operations
+// ========================================
+
+// Get all goals for current user
+export async function getGoals() {
+  const userId = await getUserId()
+  const { data, error } = await supabase
+    .from('goals')
+    .select('*')
+    .eq('user_id', userId)
+    .order('deadline', { ascending: true }) // Nearest deadline first
+
+  if (error) throw new Error('Failed to load goals')
+  return (data || []).map(row => ({
+    id: row.id,
+    user_id: row.user_id,
+    name: row.name,
+    category: row.category,
+    target_amount: row.target_amount,
+    deadline: row.deadline,
+    priority: row.priority,
+    status: row.status,
+    status_override: row.status_override,
+    funding_notes: row.funding_notes,
+    created_at: row.created_at,
+    updated_at: row.updated_at,
+  }))
+}
+
+// Create a new goal
+export async function createGoal(goal: {
+  name: string
+  category: string
+  target_amount: number
+  deadline: string
+  priority: string
+  funding_notes?: string
+}) {
+  const userId = await getUserId()
+  const { data, error } = await supabase
+    .from('goals')
+    .insert({
+      user_id: userId,
+      name: goal.name,
+      category: goal.category,
+      target_amount: goal.target_amount,
+      deadline: goal.deadline,
+      priority: goal.priority,
+      funding_notes: goal.funding_notes || '',
+      status: 'upcoming', // Default status
+    })
+    .select()
+    .single()
+
+  if (error) throw new Error('Failed to create goal')
+  return data
+}
+
+// Update an existing goal
+export async function updateGoal(id: string, updates: {
+  name?: string
+  category?: string
+  target_amount?: number
+  deadline?: string
+  priority?: string
+  status_override?: string | null
+  funding_notes?: string
+}) {
+  const userId = await getUserId()
+
+  // Verify ownership first
+  const { data: existing, error: fetchError } = await supabase
+    .from('goals')
+    .select('user_id')
+    .eq('id', id)
+    .single()
+
+  if (fetchError) throw new Error('Goal not found')
+  if (existing.user_id !== userId) throw new Error('Unauthorized: Cannot update goal owned by another user')
+
+  const updateData: Record<string, unknown> = {}
+  if (updates.name !== undefined) updateData.name = updates.name
+  if (updates.category !== undefined) updateData.category = updates.category
+  if (updates.target_amount !== undefined) updateData.target_amount = updates.target_amount
+  if (updates.deadline !== undefined) updateData.deadline = updates.deadline
+  if (updates.priority !== undefined) updateData.priority = updates.priority
+  if (updates.status_override !== undefined) updateData.status_override = updates.status_override
+  if (updates.funding_notes !== undefined) updateData.funding_notes = updates.funding_notes
+  updateData.updated_at = new Date().toISOString()
+
+  const { data, error } = await supabase
+    .from('goals')
+    .update(updateData)
+    .eq('id', id)
+    .select()
+    .single()
+
+  if (error) throw new Error('Failed to update goal')
+  return data
+}
+
+// Delete a goal
+export async function deleteGoal(id: string): Promise<void> {
+  const userId = await getUserId()
+
+  // Verify ownership first
+  const { data: existing, error: fetchError } = await supabase
+    .from('goals')
+    .select('user_id')
+    .eq('id', id)
+    .single()
+
+  if (fetchError) throw new Error('Goal not found')
+  if (existing.user_id !== userId) throw new Error('Unauthorized: Cannot delete goal owned by another user')
+
+  const { error } = await supabase
+    .from('goals')
+    .delete()
+    .eq('id', id)
+
+  if (error) throw new Error('Failed to delete goal')
+}
+
+// Get progress entries for a goal
+export async function getGoalProgress(goalId: string) {
+  const userId = await getUserId()
+  const { data, error } = await supabase
+    .from('goal_progress_entries')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('goal_id', goalId)
+    .order('month', { ascending: false })
+
+  if (error) throw new Error('Failed to load progress entries')
+  return data || []
+}
+
+// Create or update progress entry for a goal month
+export async function upsertGoalProgress(entry: {
+  goal_id: string
+  month: string
+  planned_amount: number
+  actual_amount: number
+  notes?: string
+}) {
+  const userId = await getUserId()
+  const { data, error } = await supabase
+    .from('goal_progress_entries')
+    .upsert({
+      user_id: userId,
+      goal_id: entry.goal_id,
+      month: entry.month,
+      planned_amount: entry.planned_amount,
+      actual_amount: entry.actual_amount,
+      notes: entry.notes || '',
+      updated_at: new Date().toISOString(),
+    }, {
+      onConflict: 'user_id,goal_id,month', // Unique constraint
+    })
+    .select()
+    .single()
+
+  if (error) throw new Error('Failed to save progress entry')
+  return data
+}
