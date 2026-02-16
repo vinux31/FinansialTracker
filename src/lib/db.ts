@@ -213,3 +213,201 @@ export async function migrateTransactions(transactions: any[]): Promise<number> 
 
   return count ?? 0
 }
+
+// ========================================
+// Investment CRUD Operations
+// ========================================
+
+// Get all investments for current user
+export async function getInvestments() {
+  const userId = await getUserId()
+
+  const { data, error } = await supabase
+    .from('investments')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error('Failed to fetch investments:', error)
+    throw new Error('Failed to load investments')
+  }
+
+  // Transform and validate response
+  return (data || []).map(row => ({
+    id: row.id,
+    user_id: row.user_id,
+    name: row.name,
+    category: row.category,
+    monthly_contribution: row.monthly_contribution,
+    current_value: row.current_value,
+    purchase_date: row.purchase_date,
+    notes: row.notes,
+    timestamp: row.timestamp,
+    created_at: row.created_at,
+    updated_at: row.updated_at,
+  }))
+}
+
+// Create a new investment
+export async function createInvestment(investment: {
+  name: string
+  category: string
+  monthly_contribution: number
+  current_value: number
+  purchase_date: string
+  notes?: string
+}) {
+  const userId = await getUserId()
+  const timestamp = new Date().toISOString()
+
+  // Validate input
+  const { InsertInvestmentSchema } = await import('@/lib/supabase/schema')
+  const validationResult = InsertInvestmentSchema.safeParse({
+    user_id: userId,
+    name: investment.name,
+    category: investment.category,
+    monthly_contribution: investment.monthly_contribution,
+    current_value: investment.current_value,
+    purchase_date: investment.purchase_date,
+    notes: investment.notes || '',
+    timestamp: timestamp,
+  })
+
+  if (!validationResult.success) {
+    console.error('Investment validation failed:', validationResult.error)
+    throw new Error('Invalid investment data')
+  }
+
+  const { data, error } = await supabase
+    .from('investments')
+    .insert({
+      user_id: userId,
+      name: investment.name,
+      category: investment.category,
+      monthly_contribution: investment.monthly_contribution,
+      current_value: investment.current_value,
+      purchase_date: investment.purchase_date,
+      notes: investment.notes || '',
+      timestamp: timestamp,
+    })
+    .select()
+    .single()
+
+  if (error) {
+    console.error('Failed to create investment:', error)
+    throw new Error('Failed to create investment')
+  }
+
+  return {
+    id: data.id,
+    user_id: data.user_id,
+    name: data.name,
+    category: data.category,
+    monthly_contribution: data.monthly_contribution,
+    current_value: data.current_value,
+    purchase_date: data.purchase_date,
+    notes: data.notes,
+    timestamp: data.timestamp,
+    created_at: data.created_at,
+    updated_at: data.updated_at,
+  }
+}
+
+// Update an existing investment
+export async function updateInvestment(
+  id: string,
+  updates: {
+    name?: string
+    category?: string
+    monthly_contribution?: number
+    current_value?: number
+    purchase_date?: string
+    notes?: string
+  }
+) {
+  const userId = await getUserId()
+
+  // First verify ownership
+  const { data: existing, error: fetchError } = await supabase
+    .from('investments')
+    .select('user_id')
+    .eq('id', id)
+    .single()
+
+  if (fetchError) {
+    console.error('Failed to fetch investment for ownership check:', fetchError)
+    throw new Error('Investment not found')
+  }
+
+  if (existing.user_id !== userId) {
+    throw new Error('Unauthorized: Cannot update investment owned by another user')
+  }
+
+  // Build update object with only provided fields
+  const updateData: Record<string, unknown> = {}
+  if (updates.name !== undefined) updateData.name = updates.name
+  if (updates.category !== undefined) updateData.category = updates.category
+  if (updates.monthly_contribution !== undefined) updateData.monthly_contribution = updates.monthly_contribution
+  if (updates.current_value !== undefined) updateData.current_value = updates.current_value
+  if (updates.purchase_date !== undefined) updateData.purchase_date = updates.purchase_date
+  if (updates.notes !== undefined) updateData.notes = updates.notes
+  updateData.updated_at = new Date().toISOString()
+
+  const { data, error } = await supabase
+    .from('investments')
+    .update(updateData)
+    .eq('id', id)
+    .select()
+    .single()
+
+  if (error) {
+    console.error('Failed to update investment:', error)
+    throw new Error('Failed to update investment')
+  }
+
+  return {
+    id: data.id,
+    user_id: data.user_id,
+    name: data.name,
+    category: data.category,
+    monthly_contribution: data.monthly_contribution,
+    current_value: data.current_value,
+    purchase_date: data.purchase_date,
+    notes: data.notes,
+    timestamp: data.timestamp,
+    created_at: data.created_at,
+    updated_at: data.updated_at,
+  }
+}
+
+// Delete an investment
+export async function deleteInvestment(id: string): Promise<void> {
+  const userId = await getUserId()
+
+  // First verify ownership
+  const { data: existing, error: fetchError } = await supabase
+    .from('investments')
+    .select('user_id')
+    .eq('id', id)
+    .single()
+
+  if (fetchError) {
+    console.error('Failed to fetch investment for ownership check:', fetchError)
+    throw new Error('Investment not found')
+  }
+
+  if (existing.user_id !== userId) {
+    throw new Error('Unauthorized: Cannot delete investment owned by another user')
+  }
+
+  const { error } = await supabase
+    .from('investments')
+    .delete()
+    .eq('id', id)
+
+  if (error) {
+    console.error('Failed to delete investment:', error)
+    throw new Error('Failed to delete investment')
+  }
+}
