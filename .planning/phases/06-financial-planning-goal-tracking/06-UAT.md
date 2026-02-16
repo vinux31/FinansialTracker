@@ -1,5 +1,5 @@
 ---
-status: complete
+status: diagnosed
 phase: 06-financial-planning-goal-tracking
 source:
   - 06-01-SUMMARY.md
@@ -86,7 +86,14 @@ skipped: 9
   reason: "User reported: when try create goal. show error \"Failed to create goal\""
   severity: blocker
   test: 2
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "createGoal() function in src/lib/db.ts lacks schema validation before database insert, causing validation failures or database constraint violations to throw generic error"
+  artifacts:
+    - path: "src/lib/db.ts"
+      issue: "createGoal() function (lines 446-472) missing InsertGoalSchema validation step"
+    - path: "src/components/goals/goal-form.tsx"
+      issue: "Form submits without validating data format"
+  missing:
+    - "Add InsertGoalSchema.safeParse() validation in createGoal() function"
+    - "Provide specific error messages for validation failures"
+    - "Add error handling for database constraint violations (duplicate goal name)"
+  debug_session: ".planning/debug/goal-creation-fails.md"
