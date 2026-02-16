@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Transaction } from '@/types'
-import { getTransactions, getInvestments } from '@/lib/db'
+import type { Transaction, Goal, ProgressEntry } from '@/types'
+import { getTransactions, getInvestments, getGoals, getGoalProgress } from '@/lib/db'
 import { DatabaseInvestment } from '@/lib/supabase/schema'
 import { formatIDR } from '@/lib/money'
 import { formatDisplayDateTime } from '@/lib/date'
@@ -14,6 +14,8 @@ import { Card } from '@/components/ui/card'
 export default function HistoryPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [investments, setInvestments] = useState<DatabaseInvestment[]>([])
+  const [goals, setGoals] = useState<Goal[]>([])
+  const [progressEntries, setProgressEntries] = useState<ProgressEntry[]>([])
   const [refreshKey, setRefreshKey] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -21,14 +23,24 @@ export default function HistoryPage() {
     async function loadData() {
       setIsLoading(true)
       try {
-        const [txs, invs] = await Promise.all([
+        const [txs, invs, goalsData] = await Promise.all([
           getTransactions(),
-          getInvestments()
+          getInvestments(),
+          getGoals()
         ])
         // Sort by timestamp descending (newest first)
         const sorted = txs.sort((a, b) => b.timestamp.localeCompare(a.timestamp))
         setTransactions(sorted)
         setInvestments(invs)
+        setGoals(goalsData)
+
+        // Load progress for all goals
+        const allProgress: ProgressEntry[] = []
+        for (const goal of goalsData) {
+          const progress = await getGoalProgress(goal.id)
+          allProgress.push(...progress)
+        }
+        setProgressEntries(allProgress)
       } catch (err) {
         console.error('Failed to load data:', err)
       } finally {
@@ -44,7 +56,7 @@ export default function HistoryPage() {
   }
 
   const handleExport = () => {
-    exportFinancialData(transactions, investments)
+    exportFinancialData(transactions, investments, goals, progressEntries)
   }
 
   return (
