@@ -72,7 +72,7 @@ Plans:
 - [x] 03-02-PLAN.md — Authentication flow (signup/login/logout) and protected routes
 - [x] 03-03-PLAN.md — Data migration from localStorage and real-time sync
 - [x] 03-04-PLAN.md — Phase verification checkpoint (SKIPPED)
-- [ ] 03-05-PLAN.md — Fix React Hooks ordering violation in MonthlyPage
+- [x] 03-05-PLAN.md — Fix React Hooks ordering violation in MonthlyPage
 
 ### Phase 4: Investment Portfolio Tracking
 **Goal**: Track investment portfolio alongside expenses for complete financial picture
@@ -113,6 +113,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Foundation & Core Tracking | 4/4 | Complete | 2026-02-14 |
 | 2. Dashboard & Visualization | 4/4 | Complete | 2026-02-15 |
-| 3. Authentication & Multi-Device Sync | 4/5 | Gap closure | - |
+| 3. Authentication & Multi-Device Sync | 5/5 | Complete | 2026-02-16 |
 | 4. Investment Portfolio Tracking | 0/? | Not started | - |
 | 5. Enhanced Tracking Features | 0/? | Not started | - |
