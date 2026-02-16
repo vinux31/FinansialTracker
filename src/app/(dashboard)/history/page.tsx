@@ -2,16 +2,18 @@
 
 import { useState, useEffect } from 'react'
 import { Transaction } from '@/types'
-import { getTransactions } from '@/lib/db'
+import { getTransactions, getInvestments } from '@/lib/db'
+import { DatabaseInvestment } from '@/lib/supabase/schema'
 import { formatIDR } from '@/lib/money'
 import { formatDisplayDateTime } from '@/lib/date'
-import { exportTransactionsCSV } from '@/lib/export'
+import { exportFinancialData } from '@/lib/export'
 import { IncomeForm } from '@/components/income-form'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 
 export default function HistoryPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
+  const [investments, setInvestments] = useState<DatabaseInvestment[]>([])
   const [refreshKey, setRefreshKey] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -19,12 +21,16 @@ export default function HistoryPage() {
     async function loadData() {
       setIsLoading(true)
       try {
-        const data = await getTransactions()
+        const [txs, invs] = await Promise.all([
+          getTransactions(),
+          getInvestments()
+        ])
         // Sort by timestamp descending (newest first)
-        const sorted = data.sort((a, b) => b.timestamp.localeCompare(a.timestamp))
+        const sorted = txs.sort((a, b) => b.timestamp.localeCompare(a.timestamp))
         setTransactions(sorted)
+        setInvestments(invs)
       } catch (err) {
-        console.error('Failed to load transactions:', err)
+        console.error('Failed to load data:', err)
       } finally {
         setIsLoading(false)
       }
@@ -38,7 +44,7 @@ export default function HistoryPage() {
   }
 
   const handleExport = () => {
-    exportTransactionsCSV()
+    exportFinancialData(transactions, investments)
   }
 
   return (
