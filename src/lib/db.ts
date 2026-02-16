@@ -452,6 +452,26 @@ export async function createGoal(goal: {
   funding_notes?: string
 }) {
   const userId = await getUserId()
+  const timestamp = new Date().toISOString()
+
+  // Validate input
+  const { InsertGoalSchema } = await import('@/lib/supabase/schema')
+  const validationResult = InsertGoalSchema.safeParse({
+    user_id: userId,
+    name: goal.name,
+    category: goal.category,
+    target_amount: goal.target_amount,
+    deadline: goal.deadline,
+    priority: goal.priority,
+    funding_notes: goal.funding_notes || '',
+    status: 'upcoming', // Default status
+  })
+
+  if (!validationResult.success) {
+    console.error('Goal validation failed:', validationResult.error)
+    throw new Error('Invalid goal data')
+  }
+
   const { data, error } = await supabase
     .from('goals')
     .insert({
@@ -467,7 +487,14 @@ export async function createGoal(goal: {
     .select()
     .single()
 
-  if (error) throw new Error('Failed to create goal')
+  if (error) {
+    console.error('Failed to create goal:', error)
+    // Check for unique constraint violation (duplicate goal name)
+    if (error.code === '23505') {
+      throw new Error('A goal with this name already exists')
+    }
+    throw new Error('Failed to create goal')
+  }
   return data
 }
 
