@@ -84,10 +84,13 @@ Plans:
   3. User can update investment values as portfolios change
   4. User sees investment summary alongside expense summary in monthly view
   5. User can export investments as part of CSV data export
-**Plans**: TBD
+**Plans**: 4 plans
 
 Plans:
-- [ ] TBD during phase planning
+- [ ] 04-01-PLAN.md — Database foundation with investments table, RLS policies, and Zod schemas
+- [ ] 04-02-PLAN.md — Investment entry form and portfolio list page
+- [ ] 04-03-PLAN.md — Portfolio summary with calculations, edit/delete functionality
+- [ ] 04-04-PLAN.md — Navigation integration, monthly view, and CSV export extension
 
 ### Phase 5: Enhanced Tracking Features
 **Goal**: Quality-of-life improvements and advanced insights for long-term users
