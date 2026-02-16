@@ -55,6 +55,12 @@ export default function MonthlyPage() {
     loadSummary()
   }, [selectedMonth])
 
+  // Memoize category data aggregation for chart performance
+  // Must be called before any conditional returns to satisfy Rules of Hooks
+  const categoryData = useMemo(() => {
+    return aggregateByCategory(transactions, selectedMonth)
+  }, [transactions, selectedMonth])
+
   if (!summary) {
     return (
       <div className="container mx-auto max-w-4xl space-y-6 p-4">
@@ -67,11 +73,6 @@ export default function MonthlyPage() {
   }
   const net = summary.totalIncome - summary.totalExpenses
   const hasData = summary.totalExpenses > 0 || summary.totalIncome > 0
-
-  // Memoize category data aggregation for chart performance
-  const categoryData = useMemo(() => {
-    return aggregateByCategory(transactions, selectedMonth)
-  }, [transactions, selectedMonth])
 
   return (
     <div className="container mx-auto max-w-4xl space-y-6 p-4">
