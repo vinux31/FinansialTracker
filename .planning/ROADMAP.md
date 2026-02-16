@@ -119,7 +119,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 3. Authentication & Multi-Device Sync | 5/5 | Complete | 2026-02-16 |
 | 4. Investment Portfolio Tracking | 4/4 | Complete | 2026-02-16 |
 | 5. Enhanced Tracking Features | 0/? | Not started | - |
-| 6. Financial Planning & Goal Tracking | 4/4 | Complete | 2026-02-16 |
+| 6. Financial Planning & Goal Tracking | 5/5 | Complete | 2026-02-16 |
 
 ### Phase 6: Financial Planning & Goal Tracking
 
@@ -133,10 +133,11 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
   4. User sees KPI dashboard with saving rate, goal progress %, and timeline adherence
   5. Goal status auto-infers from deadline and progress (upcoming/in-progress/completed/overdue)
   6. User can export goals and progress as part of CSV data
-**Plans:** 4 plans
+**Plans:** 5 plans
 
 Plans:
 - [x] 06-01-PLAN.md — Database foundation with goals and progress tables, RLS policies, Zod schemas
 - [x] 06-02-PLAN.md — Goal management UI with creation form, list view, edit/delete functionality
 - [x] 06-03-PLAN.md — Timeline visualization and progress tracking with monthly table view
 - [x] 06-04-PLAN.md — KPI dashboard integration and CSV export extension
+- [ ] 06-05-PLAN.md — Fix goal creation validation and error handling (gap closure)
