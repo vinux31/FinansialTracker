@@ -92,3 +92,76 @@ export function validateInvestments(investments: unknown[]): InsertInvestment[] 
 
   return result.data
 }
+
+// Goal categories, priorities, and statuses
+export const GOAL_CATEGORIES = ['Pernikahan', 'Kendaraan', 'Liburan', 'Pendidikan', 'Rumah', 'Dana Darurat', 'Lainnya'] as const
+export const GOAL_PRIORITIES = ['High', 'Medium', 'Low'] as const
+export const GOAL_STATUSES = ['upcoming', 'in-progress', 'completed', 'overdue'] as const
+
+// Database goal schema (from Supabase)
+export const DatabaseGoalSchema = z.object({
+  id: z.string().uuid(),
+  user_id: z.string().uuid(),
+  name: z.string().min(1).max(100),
+  category: z.enum(GOAL_CATEGORIES),
+  target_amount: z.number().int().positive(),
+  deadline: z.string().regex(/^\d{4}-\d{2}-\d{2}$/), // YYYY-MM-DD
+  priority: z.enum(GOAL_PRIORITIES),
+  status: z.enum(GOAL_STATUSES),
+  status_override: z.enum(GOAL_STATUSES).nullable(),
+  funding_notes: z.string().default(''),
+  created_at: z.string().datetime(),
+  updated_at: z.string().datetime(),
+})
+
+export type DatabaseGoal = z.infer<typeof DatabaseGoalSchema>
+
+// Insert goal schema (before database assigns id/timestamps)
+export const InsertGoalSchema = z.object({
+  user_id: z.string().uuid(),
+  name: z.string().min(1, 'Goal name required').max(100, 'Name too long'),
+  category: z.enum(GOAL_CATEGORIES, { message: 'Please select a valid category' }),
+  target_amount: z.number().int().positive('Target amount must be positive'),
+  deadline: z.string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format')
+    .refine(date => new Date(date) > new Date(), 'Deadline must be in the future'),
+  priority: z.enum(GOAL_PRIORITIES, { message: 'Please select a priority level' }),
+  funding_notes: z.string().max(500, 'Notes must be under 500 characters').default(''),
+})
+
+export type InsertGoal = z.infer<typeof InsertGoalSchema>
+
+// Update goal schema
+export const UpdateGoalSchema = InsertGoalSchema.partial().extend({
+  id: z.string().uuid(),
+  status_override: z.enum(GOAL_STATUSES).nullable().optional(), // Allow manual status override
+})
+
+export type UpdateGoal = z.infer<typeof UpdateGoalSchema>
+
+// Database progress entry schema (from Supabase)
+export const DatabaseProgressEntrySchema = z.object({
+  id: z.string().uuid(),
+  user_id: z.string().uuid(),
+  goal_id: z.string().uuid(),
+  month: z.string().regex(/^\d{4}-\d{2}$/), // YYYY-MM
+  planned_amount: z.number().int().min(0),
+  actual_amount: z.number().int().min(0),
+  notes: z.string().default(''),
+  created_at: z.string().datetime(),
+  updated_at: z.string().datetime(),
+})
+
+export type DatabaseProgressEntry = z.infer<typeof DatabaseProgressEntrySchema>
+
+// Insert progress entry schema
+export const InsertProgressEntrySchema = z.object({
+  user_id: z.string().uuid(),
+  goal_id: z.string().uuid(),
+  month: z.string().regex(/^\d{4}-\d{2}$/, 'Invalid month format (YYYY-MM)'),
+  planned_amount: z.number().int().min(0, 'Amount cannot be negative'),
+  actual_amount: z.number().int().min(0, 'Amount cannot be negative'),
+  notes: z.string().max(200, 'Notes must be under 200 characters').default(''),
+})
+
+export type InsertProgressEntry = z.infer<typeof InsertProgressEntrySchema>
