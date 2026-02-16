@@ -64,9 +64,7 @@ export type DatabaseInvestment = z.infer<typeof DatabaseInvestmentSchema>
 export const InsertInvestmentSchema = z.object({
   user_id: z.string().uuid(),
   name: z.string().min(1, 'Investment name required').max(255, 'Name too long'),
-  category: z.enum(INVESTMENT_CATEGORIES, {
-    errorMap: () => ({ message: 'Invalid category' })
-  }),
+  category: z.enum(INVESTMENT_CATEGORIES),
   monthly_contribution: z.number().int().positive('Contribution must be positive'),
   current_value: z.number().int().positive('Value must be positive'),
   purchase_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format'),
