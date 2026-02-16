@@ -5,22 +5,22 @@
 See: .planning/PROJECT.md (updated 2026-02-14)
 
 **Core value:** Quick daily expense logging with clear visualization of spending patterns. If everything else fails, logging an expense must be fast and seeing where money goes must be clear.
-**Current focus:** Phase 3 - Authentication & Multi-Device Sync
+**Current focus:** Phase 4 - Investment Portfolio Tracking
 
 ## Current Position
 
-Phase: 3 of 5 (Authentication & Multi-Device Sync)
-Plan: 5 of 5 in current phase
-Status: Complete
-Last activity: 2026-02-16 — Completed Phase 3 Plan 5 (03-05 Gap Closure - React Hooks Fix)
+Phase: 4 of 5 (Investment Portfolio Tracking)
+Plan: 1 of 4 in current phase
+Status: In Progress
+Last activity: 2026-02-16 — Completed Phase 4 Plan 1 (04-01 Database Foundation)
 
-Progress: [█████████████████] 65%
+Progress: [██████████████████] 68%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 13
-- Average duration: 7.5 min
+- Total plans completed: 14
+- Average duration: 7.1 min
 - Total execution time: 1.6 hours
 
 **By Phase:**
@@ -30,17 +30,19 @@ Progress: [█████████████████] 65%
 | 01-foundation-core-tracking | 4 | 25 min | 6.25 min |
 | 02-dashboard-visualization | 4 | 17 min | 4.25 min |
 | 03-authentication-multi-device-sync | 5 | 55 min | 11.0 min |
+| 04-investment-portfolio-tracking | 1 | 1 min | 1.0 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-01 (42 min), 03-02 (6 min), 03-03 (6 min), 03-04 (<1 min), 03-05 (1 min)
-- Note: Phase 03-01 took longer due to external service setup (Supabase project creation and migration application)
+- Last 5 plans: 03-02 (6 min), 03-03 (6 min), 03-04 (<1 min), 03-05 (1 min), 04-01 (1 min)
 - Note: Phase 03-04 skipped verification by user request
 - Note: Phase 03-05 gap closure plan - surgical React Hooks fix
+- Note: Phase 04-01 fast execution - foundational schema work only
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
 | Phase 03-authentication-multi-device-sync P04 | <1min | 1 tasks | 0 files |
 | Phase 03 P05 | 1 | 1 tasks | 1 files |
+| Phase 04-investment-portfolio-tracking P01 | 1 min | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -86,10 +88,16 @@ Recent decisions affecting current work:
 - [Phase 03-03]: getUserId() authentication helper - All database operations require authenticated user context, enforcing user_id filtering
 - [Phase 03-03]: Loading states on all operations - Prevents UI flicker and provides user feedback during async database calls
 - [Phase 03-authentication-multi-device-sync]: User chose to skip comprehensive end-to-end verification test suite — Phase 3 implementation complete but unverified - manual testing recommended before production
+- [Phase 04-01]: Investments table follows exact transactions table pattern (RLS, indexes, constraints) — Proven pattern from Phase 3 ensures consistency and maintainability
+- [Phase 04-01]: Category constraint at database level prevents invalid investment types — Defense-in-depth: database CHECK constraint enforces valid categories alongside Zod validation
 
 ### Pending Todos
 
 - Add date picker to expense form for logging past expenses (.planning/todos/pending/2026-02-15-add-date-picker-to-expense-form-for-logging-past-expense.md)
+
+### Roadmap Evolution
+
+- Phase 6 added: Financial Planning & Goal Tracking (generic goal-based planning system)
 
 ### Blockers/Concerns
 
@@ -98,6 +106,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: Completed 03-05-PLAN.md (Gap Closure - React Hooks Fix)
+Stopped at: Completed 04-01-PLAN.md (Database Foundation)
 Resume file: None
-Next action: Phase 3 fully complete with gap closure. All React Hooks violations resolved. Use /gsd:plan-phase 04 to begin Phase 4 (Data Export & Sharing).
+Next action: Phase 4 Plan 1 complete. Database foundation established with investments table, RLS policies, and CRUD operations. Continue with 04-02 to build investment entry UI and portfolio list page.

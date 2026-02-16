@@ -117,5 +117,14 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Foundation & Core Tracking | 4/4 | Complete | 2026-02-14 |
 | 2. Dashboard & Visualization | 4/4 | Complete | 2026-02-15 |
 | 3. Authentication & Multi-Device Sync | 5/5 | Complete | 2026-02-16 |
-| 4. Investment Portfolio Tracking | 0/? | Not started | - |
+| 4. Investment Portfolio Tracking | 1/4 | In progress | - |
 | 5. Enhanced Tracking Features | 0/? | Not started | - |
+
+### Phase 6: Financial Planning & Goal Tracking
+
+**Goal:** [To be planned]
+**Depends on:** Phase 5
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 6 to break down)
