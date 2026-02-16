@@ -13,6 +13,7 @@ export function Navigation({ userEmail }: { userEmail?: string }) {
     { href: '/', label: 'Today' },
     { href: '/history', label: 'History' },
     { href: '/monthly', label: 'Monthly' },
+    { href: '/investments', label: 'Investments' },
   ]
 
   async function handleLogout() {
