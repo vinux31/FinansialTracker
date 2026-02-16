@@ -2,12 +2,14 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import { Transaction, CATEGORIES, MonthSummary } from '@/types'
-import { getTransactions, getMonthSummary } from '@/lib/db'
+import { getTransactions, getMonthSummary, getInvestments } from '@/lib/db'
+import { DatabaseInvestment } from '@/lib/supabase/schema'
 import { getUniqueMonths, formatMonth, currentMonthString } from '@/lib/date'
 import { formatIDR } from '@/lib/money'
 import { aggregateByCategory } from '@/lib/chart-data'
 import { CategoryBreakdown } from '@/components/charts/category-breakdown'
 import { TrendComparison } from '@/components/charts/trend-comparison'
+import { PortfolioSummary } from '@/components/portfolio-summary'
 import { Card } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import {
@@ -20,6 +22,7 @@ import {
 
 export default function MonthlyPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
+  const [investments, setInvestments] = useState<DatabaseInvestment[]>([])
   const [availableMonths, setAvailableMonths] = useState<string[]>([])
   const [selectedMonth, setSelectedMonth] = useState<string>(currentMonthString())
   const [summary, setSummary] = useState<MonthSummary | null>(null)
@@ -29,13 +32,17 @@ export default function MonthlyPage() {
     async function loadData() {
       setIsLoading(true)
       try {
-        const data = await getTransactions()
-        setTransactions(data)
+        const [txs, invs] = await Promise.all([
+          getTransactions(),
+          getInvestments()
+        ])
+        setTransactions(txs)
+        setInvestments(invs)
 
-        const months = getUniqueMonths(data.map(tx => tx.date))
+        const months = getUniqueMonths(txs.map(tx => tx.date))
         setAvailableMonths(months.length > 0 ? months : [currentMonthString()])
       } catch (err) {
-        console.error('Failed to load transactions:', err)
+        console.error('Failed to load data:', err)
       } finally {
         setIsLoading(false)
       }
@@ -169,6 +176,12 @@ export default function MonthlyPage() {
               })}
             </div>
           </Card>
+
+          {/* Investment Portfolio */}
+          <div className="mt-8">
+            <h2 className="mb-4 text-xl font-semibold">Investment Portfolio</h2>
+            <PortfolioSummary investments={investments} />
+          </div>
         </div>
       )}
     </div>
