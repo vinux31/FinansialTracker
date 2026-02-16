@@ -14,6 +14,7 @@ export function Navigation({ userEmail }: { userEmail?: string }) {
     { href: '/history', label: 'History' },
     { href: '/monthly', label: 'Monthly' },
     { href: '/investments', label: 'Investments' },
+    { href: '/goals', label: 'Goals' },
   ]
 
   async function handleLogout() {
