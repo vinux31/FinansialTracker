@@ -122,9 +122,20 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 ### Phase 6: Financial Planning & Goal Tracking
 
-**Goal:** [To be planned]
-**Depends on:** Phase 5
-**Plans:** 0 plans
+**Goal:** Enable multi-goal financial planning with timeline visualization, progress tracking, and KPI monitoring
+**Depends on:** Phase 4 (builds on complete expense and investment tracking foundation)
+**Requirements:** GOAL-01 through GOAL-08 (create goals with targets/deadlines, track monthly progress, view timeline, KPI dashboard, risk indicators, CSV export)
+**Success Criteria** (what must be TRUE):
+  1. User can create financial goals with name, category, target amount, deadline, and priority
+  2. User can view monthly timeline showing planned savings and goal deadlines
+  3. User can log monthly progress (planned vs actual) for each goal
+  4. User sees KPI dashboard with saving rate, goal progress %, and timeline adherence
+  5. Goal status auto-infers from deadline and progress (upcoming/in-progress/completed/overdue)
+  6. User can export goals and progress as part of CSV data
+**Plans:** 4 plans
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 6 to break down)
+- [ ] 06-01-PLAN.md — Database foundation with goals and progress tables, RLS policies, Zod schemas
+- [ ] 06-02-PLAN.md — Goal management UI with creation form, list view, edit/delete functionality
+- [ ] 06-03-PLAN.md — Timeline visualization and progress tracking with monthly table view
+- [ ] 06-04-PLAN.md — KPI dashboard integration and CSV export extension
