@@ -1,14 +1,17 @@
 import Papa from 'papaparse'
 import Currency from 'currency.js'
 import { DatabaseTransaction, DatabaseInvestment } from '@/lib/supabase/schema'
+import type { Goal, ProgressEntry } from '@/types'
 
 const IDR = (value: number) => Currency(value, { precision: 0 })
 
 export function exportFinancialData(
   transactions: DatabaseTransaction[],
-  investments: DatabaseInvestment[]
+  investments: DatabaseInvestment[],
+  goals: Goal[],
+  progressEntries: ProgressEntry[]
 ): void {
-  if (transactions.length === 0 && investments.length === 0) {
+  if (transactions.length === 0 && investments.length === 0 && goals.length === 0) {
     alert('No data to export')
     return
   }
@@ -24,6 +27,9 @@ export function exportFinancialData(
 
   const totalInvestments = investments
     .reduce((sum, inv) => sum + inv.current_value, 0)
+
+  const totalGoalTargets = goals
+    .reduce((sum, goal) => sum + goal.target_amount, 0)
 
   // Build CSV data with sections
   const exportData: any[] = [
@@ -50,11 +56,40 @@ export function exportFinancialData(
       inv.notes || ''
     ]),
     [],
+    // GOALS section
+    ['GOALS'],
+    ['Name', 'Category', 'Target Amount', 'Deadline', 'Priority', 'Status', 'Funding Notes'],
+    ...goals.map(goal => [
+      goal.name,
+      goal.category,
+      goal.target_amount,
+      goal.deadline,
+      goal.priority,
+      goal.status,
+      goal.funding_notes
+    ]),
+    [],
+    // GOAL PROGRESS section
+    ['GOAL PROGRESS'],
+    ['Goal Name', 'Month', 'Planned Amount', 'Actual Amount', 'Notes'],
+    ...(() => {
+      // Map goal IDs to names for readability
+      const goalNames = new Map(goals.map(g => [g.id, g.name]))
+      return progressEntries.map(entry => [
+        goalNames.get(entry.goal_id) || 'Unknown Goal',
+        entry.month,
+        entry.planned_amount,
+        entry.actual_amount,
+        entry.notes
+      ])
+    })(),
+    [],
     // SUMMARY section
     ['SUMMARY'],
     ['Total Expenses', IDR(totalExpenses).format()],
     ['Total Income', IDR(totalIncome).format()],
-    ['Total Investments', IDR(totalInvestments).format()]
+    ['Total Investments', IDR(totalInvestments).format()],
+    ['Total Goal Targets', IDR(totalGoalTargets).format()]
   ]
 
   const csv = Papa.unparse(exportData)
