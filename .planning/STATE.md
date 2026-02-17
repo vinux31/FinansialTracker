@@ -128,6 +128,7 @@ None yet.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 1 | Fix portfolio metrics 100x multiplication bug caused by currency.js intValue | 2026-02-17 | dc295df | [1-fix-portfolio-metrics-100x-multiplicatio](.planning/quick/1-fix-portfolio-metrics-100x-multiplicatio/) |
+| 2 | Add date filter to History page | 2026-02-17 | 7e306e8 | [2-add-date-filter-to-history-page](.planning/quick/2-add-date-filter-to-history-page/) |
 
 ## Session Continuity
 
