@@ -1,5 +1,5 @@
 ---
-status: complete
+status: diagnosed
 phase: 03-authentication-multi-device-sync
 source: [03-01-SUMMARY.md, 03-02-SUMMARY.md, 03-03-SUMMARY.md]
 started: 2026-02-15T13:00:00Z
@@ -92,17 +92,23 @@ skipped: 3
   reason: "User reported: show error in dashboard, ## Error Type Console Error ## Error Message React has detected a change in the order of Hooks called by MonthlyPage. This will lead to bugs and errors if not fixed. For more information, read the Rules of Hooks: https://react.dev/link/rules-of-hooks Previous render Next render ------------------------------------------------------ 1. useState useState 2. useState useState 3. useState useState 4. useState useState 5. useState useState 6. useEffect useEffect 7. useEffect useEffect 8. undefined useMemo ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ at MonthlyPage (src/app/(dashboard)/monthly/page.tsx:72:31) ## Code Frame 70 | 71 | // Memoize category data aggregation for chart performance > 72 | const categoryData = useMemo(() => { | ^ 73 | return aggregateByCategory(transactions, selectedMonth) 74 | }, [transactions, selectedMonth]) 75 | Next.js version: 16.1.6 (Turbopack)"
   severity: major
   test: 14
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "useMemo hook at line 72 is called AFTER conditional early return at lines 58-67, violating Rules of Hooks. When summary is null (initial render), component returns early with 7 hooks. When summary exists (after data loads), component continues and calls useMemo, totaling 8 hooks. React forbids inconsistent hook ordering between renders."
+  artifacts:
+    - path: "src/app/(dashboard)/monthly/page.tsx"
+      issue: "useMemo positioned after conditional return statement"
+  missing:
+    - "Move useMemo hook before line 58 (before early return check)"
+  debug_session: ".planning/debug/monthly-page-hooks-violation.md"
 
 - truth: "Monthly summary page renders without errors"
   status: failed
   reason: "User reported: same error"
   severity: major
   test: 15
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "Same as Test 14 - useMemo hook ordering violation in MonthlyPage component"
+  artifacts:
+    - path: "src/app/(dashboard)/monthly/page.tsx"
+      issue: "useMemo positioned after conditional return statement"
+  missing:
+    - "Move useMemo hook before line 58 (before early return check)"
+  debug_session: ".planning/debug/monthly-page-hooks-violation.md"

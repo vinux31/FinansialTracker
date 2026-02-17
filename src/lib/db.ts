@@ -44,7 +44,7 @@ export async function getTransactions(): Promise<Transaction[]> {
 // Add expense helper
 export async function addExpense(expense: NewExpense): Promise<Transaction> {
   const userId = await getUserId()
-  const dateStr = todayDateString()
+  const dateStr = expense.date ?? todayDateString()
   const timestamp = new Date().toISOString()
 
   const { data, error } = await supabase

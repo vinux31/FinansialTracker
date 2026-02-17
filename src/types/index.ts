@@ -17,6 +17,7 @@ export type NewExpense = {
   amount: number
   category: Category
   notes: string
+  date?: string // YYYY-MM-DD, defaults to today if not provided
 }
 
 export type NewIncome = {

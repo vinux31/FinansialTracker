@@ -4,6 +4,7 @@ import { useRef, useState } from 'react'
 import { expenseSchema } from '@/lib/validation'
 import { addExpense } from '@/lib/db'
 import { CATEGORIES } from '@/types'
+import { todayDateString } from '@/lib/date'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -27,6 +28,7 @@ export function ExpenseForm({ onExpenseAdded }: ExpenseFormProps) {
       amount: formData.get('amount') as string,
       category: formData.get('category') as string,
       notes: formData.get('notes') as string,
+      date: formData.get('date') as string,
     }
 
     const result = expenseSchema.safeParse(data)
@@ -49,6 +51,7 @@ export function ExpenseForm({ onExpenseAdded }: ExpenseFormProps) {
         amount: result.data.amount,
         category: result.data.category,
         notes: result.data.notes,
+        date: data.date || undefined,
       })
 
       // Reset form
@@ -115,6 +118,17 @@ export function ExpenseForm({ onExpenseAdded }: ExpenseFormProps) {
         {errors.notes && (
           <p className="text-sm text-red-600">{errors.notes}</p>
         )}
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="date">Date</Label>
+        <Input
+          id="date"
+          name="date"
+          type="date"
+          defaultValue={todayDateString()}
+          max={todayDateString()}
+        />
       </div>
 
       {errors.submit && (
