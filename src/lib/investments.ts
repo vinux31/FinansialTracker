@@ -35,28 +35,28 @@ export function usePortfolioMetrics(investments: DatabaseInvestment[]): Portfoli
     // Aggregate all investments
     for (const inv of investments) {
       // Add to overall totals using currency.js
-      totalValue = new Currency(totalValue).add(inv.current_value).intValue
-      totalContributed = new Currency(totalContributed).add(inv.monthly_contribution).intValue
+      totalValue = new Currency(totalValue).add(inv.current_value).value
+      totalContributed = new Currency(totalContributed).add(inv.monthly_contribution).value
 
       // Add to category bucket
       const category = inv.category
       if (category in byCategory) {
         byCategory[category].count++
         byCategory[category].totalValue = new Currency(byCategory[category].totalValue)
-          .add(inv.current_value).intValue
+          .add(inv.current_value).value
         byCategory[category].totalContributed = new Currency(byCategory[category].totalContributed)
-          .add(inv.monthly_contribution).intValue
+          .add(inv.monthly_contribution).value
       }
     }
 
     // Calculate gains
-    const totalGain = new Currency(totalValue).subtract(totalContributed).intValue
+    const totalGain = new Currency(totalValue).subtract(totalContributed).value
     const gainPercent = totalContributed > 0 ? (totalGain / totalContributed) * 100 : 0
 
     // Calculate category gains
     for (const category in byCategory) {
       const metrics = byCategory[category]
-      metrics.totalGain = new Currency(metrics.totalValue).subtract(metrics.totalContributed).intValue
+      metrics.totalGain = new Currency(metrics.totalValue).subtract(metrics.totalContributed).value
     }
 
     return {
