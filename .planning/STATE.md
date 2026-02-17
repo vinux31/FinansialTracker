@@ -129,10 +129,11 @@ None yet.
 |---|-------------|------|--------|-----------|
 | 1 | Fix portfolio metrics 100x multiplication bug caused by currency.js intValue | 2026-02-17 | dc295df | [1-fix-portfolio-metrics-100x-multiplicatio](.planning/quick/1-fix-portfolio-metrics-100x-multiplicatio/) |
 | 2 | Add date filter to History page | 2026-02-17 | 7e306e8 | [2-add-date-filter-to-history-page](.planning/quick/2-add-date-filter-to-history-page/) |
+| 3 | Add PWA manifest and Add to Home Screen support | 2026-02-17 | 0c2e758 | [3-add-pwa-manifest-and-add-to-home-screen-](.planning/quick/3-add-pwa-manifest-and-add-to-home-screen-/) |
 
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Fixed portfolio 100x bug, deployed to Vercel
+Stopped at: Completed quick-3: PWA manifest, icons, and metadata wired into layout
 Resume file: None
 Next action: /gsd:new-milestone — define v1.1 requirements and roadmap
