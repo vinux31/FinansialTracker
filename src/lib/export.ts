@@ -1,12 +1,12 @@
 import Papa from 'papaparse'
 import Currency from 'currency.js'
-import { DatabaseTransaction, DatabaseInvestment } from '@/lib/supabase/schema'
-import type { Goal, ProgressEntry } from '@/types'
+import { DatabaseInvestment } from '@/lib/supabase/schema'
+import type { Transaction, Goal, ProgressEntry } from '@/types'
 
 const IDR = (value: number) => Currency(value, { precision: 0 })
 
 export function exportFinancialData(
-  transactions: DatabaseTransaction[],
+  transactions: Transaction[],
   investments: DatabaseInvestment[],
   goals: Goal[],
   progressEntries: ProgressEntry[]
