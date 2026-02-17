@@ -130,10 +130,11 @@ None yet.
 | 1 | Fix portfolio metrics 100x multiplication bug caused by currency.js intValue | 2026-02-17 | dc295df | [1-fix-portfolio-metrics-100x-multiplicatio](.planning/quick/1-fix-portfolio-metrics-100x-multiplicatio/) |
 | 2 | Add date filter to History page | 2026-02-17 | 7e306e8 | [2-add-date-filter-to-history-page](.planning/quick/2-add-date-filter-to-history-page/) |
 | 3 | Add PWA manifest and Add to Home Screen support | 2026-02-17 | 0c2e758 | [3-add-pwa-manifest-and-add-to-home-screen-](.planning/quick/3-add-pwa-manifest-and-add-to-home-screen-/) |
+| 4 | Add Edit button and modal to goal rows for editing deadline and target amount | 2026-02-17 | a234963 | [4-add-edit-functionality-to-goals-allow-ed](.planning/quick/4-add-edit-functionality-to-goals-allow-ed/) |
 
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed quick-3: PWA manifest, icons, and metadata wired into layout
+Stopped at: Completed quick-4: Edit button and modal on GoalRow using GoalForm with goal prop
 Resume file: None
 Next action: /gsd:new-milestone — define v1.1 requirements and roadmap
