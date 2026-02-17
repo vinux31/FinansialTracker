@@ -18,6 +18,8 @@ export default function HistoryPage() {
   const [progressEntries, setProgressEntries] = useState<ProgressEntry[]>([])
   const [refreshKey, setRefreshKey] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
+  const [dateFrom, setDateFrom] = useState('')
+  const [dateTo, setDateTo] = useState('')
 
   useEffect(() => {
     async function loadData() {
@@ -59,6 +61,17 @@ export default function HistoryPage() {
     exportFinancialData(transactions, investments, goals, progressEntries)
   }
 
+  const filteredTransactions = transactions.filter((tx) => {
+    if (dateFrom && tx.date < dateFrom) return false
+    if (dateTo && tx.date > dateTo) return false
+    return true
+  })
+
+  const handleClearFilter = () => {
+    setDateFrom('')
+    setDateTo('')
+  }
+
   return (
     <div className="container mx-auto max-w-4xl space-y-6 p-4">
       <div className="flex items-center justify-between">
@@ -74,6 +87,36 @@ export default function HistoryPage() {
         <IncomeForm onIncomeAdded={handleIncomeAdded} />
       </div>
 
+      {/* Date Filter */}
+      <div className="flex flex-wrap items-end gap-3 rounded-lg border bg-white p-4">
+        <div className="flex flex-col gap-1">
+          <label className="text-xs font-medium text-gray-600">From</label>
+          <input
+            type="date"
+            value={dateFrom}
+            onChange={(e) => setDateFrom(e.target.value)}
+            className="h-9 rounded-md border border-input bg-background px-3 py-1 text-sm"
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-xs font-medium text-gray-600">To</label>
+          <input
+            type="date"
+            value={dateTo}
+            onChange={(e) => setDateTo(e.target.value)}
+            className="h-9 rounded-md border border-input bg-background px-3 py-1 text-sm"
+          />
+        </div>
+        {(dateFrom || dateTo) && (
+          <Button variant="outline" size="sm" onClick={handleClearFilter}>
+            Clear
+          </Button>
+        )}
+        <span className="ml-auto text-sm text-gray-500">
+          {filteredTransactions.length} transaction{filteredTransactions.length !== 1 ? 's' : ''}
+        </span>
+      </div>
+
       {/* Transaction List */}
       <div>
         <h2 className="mb-4 text-xl font-semibold">All Transactions</h2>
@@ -81,13 +124,13 @@ export default function HistoryPage() {
           <Card className="p-8 text-center text-gray-500">
             <p>Loading transactions...</p>
           </Card>
-        ) : transactions.length === 0 ? (
+        ) : filteredTransactions.length === 0 ? (
           <Card className="p-8 text-center text-gray-500">
-            <p>No transactions yet. Start by adding an expense!</p>
+            <p>{transactions.length === 0 ? 'No transactions yet. Start by adding an expense!' : 'No transactions match the selected date range.'}</p>
           </Card>
         ) : (
           <div className="space-y-2">
-            {transactions.map((tx) => (
+            {filteredTransactions.map((tx) => (
               <Card
                 key={tx.id}
                 className={`p-4 ${
